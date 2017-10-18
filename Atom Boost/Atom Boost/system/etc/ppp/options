@@ -1,0 +1,7 @@
+# Habilita compresão para carregando mais veloz da /data
+
+
+crtscts
+vj
+bsdcomp
+deflate

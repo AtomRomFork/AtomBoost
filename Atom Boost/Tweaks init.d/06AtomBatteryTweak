@@ -1,0 +1,233 @@
+#!/system/bin/sh
+# AtomBattery
+# Atom Rom
+
+PATH=$PATH:/system/xbin:/sbin:/vendor/bin:/system/sbin:/system/bin
+if [ -d /data/local/busybox*/xbin ]; then PATH=$PATH:`ls -d /data/local/busybox*/xbin 2>/dev/null`; fi
+mount -o remount,rw /data 2>/dev/null;
+busybox mount -o remount,rw /data 2>/dev/null;
+
+Start(){
+	echo "";
+	echo "RK";
+	echo "";
+	echo "Executed at: `date | awk '{print $1,$2,$3,$4}'`";
+	echo "";
+};
+GOV(){
+	echo "RK...";
+	echo "";
+	if [ -e /sys/devices/system/cpu/cpufreq/ondemand/up_threshold ]; then
+		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemand/down_differential "= 5";
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor "= 1";
+		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemand/sampling_rate "= 120000";
+		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemand/up_threshold "= 95";
+		echo "10" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemand/freq_step "= 10";
+	fi;
+	
+	if [ -e /sys/devices/system/cpu/cpufreq/ondemandx/up_threshold ]; then
+		echo "5" > /sys/devices/system/cpu/cpufreq/ondemandx/down_differential;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemandx/down_differential "= 5";
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemandx/sampling_down_factor;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemandx/sampling_down_factor "= 1";
+		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemandx/sampling_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemandx/sampling_rate "= 120000";
+		echo "95" > /sys/devices/system/cpu/cpufreq/ondemandx/up_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemandx/up_threshold "= 95";
+		echo "10" > /sys/devices/system/cpu/cpufreq/ondemandx/freq_step;
+		echo ""/sys/devices/system/cpu/cpufreq/ondemandx/freq_step "= 10";
+	fi;
+
+	if [ -e /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time ]; then
+		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo ""/sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load "= 90";
+		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo ""/sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step "= 1";
+		echo "2" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo ""/sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step "= 2";
+		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+		echo ""/sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time "= 50000";
+		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+		echo ""/sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time "= 40000";
+		echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+		echo ""/sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step "= 5";
+	fi;
+	
+	if [ -e /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq ]; then
+		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq "= 500000";
+		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq "= 200000";
+		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq "= 500000";
+		echo "85" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/max_cpu_load "= 85";
+		echo "70" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/min_cpu_load "= 70";
+		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/ramp_up_step "= 200000";
+		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/ramp_down_step "= 200000";
+		echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/up_rate "= 48000";
+		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/smartass/down_rate "= 49000";
+	fi;
+
+	if [ -e /sys/devices/system/cpu/cpufreq/conservative/up_threshold ]; then
+		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/conservative/down_threshold "= 40";
+		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		echo ""/sys/devices/system/cpu/cpufreq/conservative/freq_step "= 10";
+		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+		echo ""/sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor "= 1";
+		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/conservative/sampling_rate "= 120000";
+		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/conservative/up_threshold "= 95";
+	fi;
+
+	if [ -e /sys/devices/system/cpu/cpufreq/interactive/go_maxspeed_load ]; then
+		echo "95" > /sys/devices/system/cpu/cpufreq/interactive/go_maxspeed_load;
+		echo ""/sys/devices/system/cpu/cpufreq/interactive/go_maxspeed_load "= 95";
+		echo "10000" > /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq;
+		echo ""/sys/devices/system/cpu/cpufreq/interactive/hispeed_freq "= 10000";
+		echo "10000" > /sys/devices/system/cpu/cpufreq/interactive/min_sample_time;
+		echo ""/sys/devices/system/cpu/cpufreq/interactive/min_sample_time "= 10000";
+		echo "40000" > /sys/devices/system/cpu/cpufreq/interactive/timer_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/interactive/timer_rate "= 40000";
+	fi;
+	
+	if [ -e /sys/devices/system/cpu/cpufreq/interactivex/go_maxspeed_load ]; then
+		echo "95" > /sys/devices/system/cpu/cpufreq/interactivex/go_maxspeed_load;
+		echo ""/sys/devices/system/cpu/cpufreq/interactivex/go_maxspeed_load "= 95";
+		echo "10000" > /sys/devices/system/cpu/cpufreq/interactivex/hispeed_freq;
+		echo ""/sys/devices/system/cpu/cpufreq/interactivex/hispeed_freq "= 10000";
+		echo "10000" > /sys/devices/system/cpu/cpufreq/interactivex/min_sample_time;
+		echo ""/sys/devices/system/cpu/cpufreq/interactivex/min_sample_time "= 10000";
+		echo "40000" > /sys/devices/system/cpu/cpufreq/interactivex/timer_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/interactivex/timer_rate "= 40000";
+	fi;
+	
+	if [ -e /sys/devices/system/cpu/cpufreq/hotplug/up_threshold ]; then
+		echo "500000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
+		echo ""/sys/devices/system/cpu/cpufreq/hotplug/sampling_rate "= 500000";
+		echo "75" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/hotplug/up_threshold "= 75";
+		echo "45" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/hotplug/down_threshold "= 45";
+		echo "15" > /sys/devices/system/cpu/cpufreq/hotplug/hotplug_out_sampling_periods;
+		echo ""/sys/devices/system/cpu/cpufreq/hotplug/hotplug_out_sampling_periods "= 15";
+		echo "5" > /sys/devices/system/cpu/cpufreq/hotplug/hotplug_in_sampling_periods;
+		echo ""/sys/devices/system/cpu/cpufreq/hotplug/hotplug_in_sampling_periods "= 5";
+	fi;
+	
+	if [ -e /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/down_rate_us ]; then
+		echo "312000" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/awake_min_freq;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/awake_min_freq "= 312000";
+		echo "312000" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/sleep_max_freq;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/sleep_max_freq "= 312000";
+		echo "312000" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/sleep_wakeup_freq;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/sleep_wakeup_freq "= 312000";
+		echo "85" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/max_cpu_load;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/max_cpu_load "= 85";
+		echo "45" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/min_cpu_load;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/min_cpu_load "= 45";
+		echo "200000" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/ramp_up_step;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/ramp_up_step "= 200000";
+		echo "200000" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/ramp_down_step;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/ramp_down_step "= 200000";
+		echo "48000" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/up_rate_us;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/up_rate_us "= 48000";
+		echo "49000" > /sys/devices/system/cpu/cpu0/cpufreq/savagedzen/down_rate_us;
+		echo ""/sys/devices/system/cpu/cpu0/cpufreq/savagedzen/down_rate_us "= 49000";
+	fi;
+	
+	if [ -e /sys/devices/system/cpu/cpufreq/badass/busy_threshold ]; then
+		echo "918000" > /sys/devices/system/cpu/cpufreq/badass/two_phase_freq;
+		echo ""/sys/devices/system/cpu/cpufreq/badass/two_phase_freq "= 918000";
+		echo "1188000" > /sys/devices/system/cpu/cpufreq/badass/three_phase_freq;
+		echo ""/sys/devices/system/cpu/cpufreq/badass/three_phase_freq "= 1188000";
+		echo "140" > /sys/devices/system/cpu/cpufreq/badass/busy_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/badass/busy_threshold "= 140";
+		echo "110" > /sys/devices/system/cpu/cpufreq/badass/busy_clr_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/badass/busy_clr_threshold "= 110";
+		echo "80" > /sys/devices/system/cpu/cpufreq/badass/semi_busy_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/badass/semi_busy_threshold "= 80";
+		echo "20" > /sys/devices/system/cpu/cpufreq/badass/semi_busy_clr_threshold;
+		echo ""/sys/devices/system/cpu/cpufreq/badass/semi_busy_clr_threshold "= 20";
+	fi;
+	echo "";
+};
+SCHED(){
+
+	for i in /sys/block/*/queue; do
+		if [ -f "$i/scheduler" ] && [ "`cat $i/scheduler`" != "none" ] && [ ! "`cat $i/scheduler | grep "\[$iosched\]"`" ]; then
+			busybox sync;
+			if [ ! "`echo $i | grep loop`" ] && [ ! "`echo $i | grep ram`" ]; then
+				if [ -f "$i/rotational" ] && [ "`cat $i/rotational`" -ne 0 ]; then
+					echo "0" > $i/rotational;
+					echo ""$i/rotational "= 0"
+				fi 2>/dev/null;
+				if [ -f "$i/nr_requests" ] && [ "`cat $i/nr_requests`" -ne 512 ]; then
+					echo "512" > $i/nr_requests;
+					echo ""$i/nr_requests "= 512"
+				fi 2>/dev/null;
+				if [ -f "$i/iostats" ] && [ "`cat $i/iostats`" -ne 0 ]; then
+					echo "0" > $i/iostats;
+					echo ""$i/iostats "= 0"
+				fi 2>/dev/null;
+				if [ -f "$i/iosched/low_latency" ] && [ "`cat $i/iosched/low_latency`" -ne 1 ]; then
+					echo "1" > $i/iosched/low_latency;
+					echo ""$i/iosched/low_latency "= 1"
+				fi 2>/dev/null;
+				if [ -f "$i/iosched/back_seek_penalty" ] && [ "`cat $i/iosched/back_seek_penalty`" -ne 1 ]; then
+					echo "1" > $i/iosched/back_seek_penalty;
+					echo ""$i/iosched/back_seek_penalty "= 1"
+				fi 2>/dev/null;
+				if [ -f "$i/iosched/back_seek_max" ] && [ "`cat $i/iosched/back_seek_max`" -ne 1000000000 ]; then
+					echo "1000000000" > $i/iosched/back_seek_max;
+					echo ""$i/iosched/back_seek_max "= 1000000000"
+				fi 2>/dev/null;
+				if [ -f "$i/iosched/slice_idle" ] && [ "`cat $i/iosched/slice_idle`" -ne 0 ]; then
+					echo "0" > $i/iosched/slice_idle;
+					echo ""$i/iosched/slice_idle "= 0"
+				fi 2>/dev/null;
+				if [ -f "$i/iosched/fifo_batch" ] && [ "`cat $i/iosched/fifo_batch`" -ne 1 ]; then
+					echo "1" > $i/iosched/fifo_batch;
+					echo ""$i/iosched/fifo_batch "= 1"
+				fi 2>/dev/null;
+				if [ -f "$i/iosched/quantum" ] && [ "`cat $i/iosched/quantum`" -ne 16 ]; then
+					echo "16" > $i/iosched/quantum;
+					echo ""$i/iosched/quantum "= 16"
+				fi 2>/dev/null;
+			fi;
+			busybox sync;
+			echo "$iosched" > $i/scheduler;
+		fi;
+	done;
+};
+RUN(){
+	while [ ! "`ps | grep -m 1 [a]ndroid`" ]; do sleep 10; done;
+	if [ "`echo $0 | grep "init\.d"`" ]; then
+		sleep 60;
+	fi;
+	GOV;
+	SCHED;
+	echo "";
+	echo "$0 Succesfully executed...";
+	echo "";
+};
+if [ ! "`ps | grep -m 1 [a]ndroid`" ]; then exec > /data/robkof/rk.log 2>&1; fi;
+Start;
+if [ "`ps | grep -m 1 [a]ndroid`" ]; then RUN;
+else RUN &
+fi;
+echo "Battery Tweaks" > /data/sboost/sb.log;
+
+exit 0;

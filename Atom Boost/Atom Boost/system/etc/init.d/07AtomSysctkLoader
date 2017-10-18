@@ -1,0 +1,4 @@
+#!/system/bin/sh
+
+### Carregador Sysctl
+sysctl -p /system/etc/sysctl.conf

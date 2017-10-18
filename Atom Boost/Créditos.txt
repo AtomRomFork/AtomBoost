@@ -1,0 +1,27 @@
+﻿###################################################################################################
+#       	          _______ ____  __  __ ____   ____   ____   _____ _______ 	          #
+#   		       /\|__   __/ __ \|  \/  |  _ \ / __ \ / __ \ / ____|__   __|                #
+#        	      /  \  | | | |  | | \  / | |_) | |  | | |  | | (___    | |  		  #
+#  	             / /\ \ | | | |  | | |\/| |  _ <| |  | | |  | |\___ \   | |                   #
+# 		    / ____ \| | | |__| | |  | | |_) | |__| | |__| |____) |  | |                   #
+#		   /_/    \_\_|  \____/|_|  |_|____/ \____/ \____/|_____/   |_|                   #
+#												  #
+#                                                                                                 #
+#		 Este conjunto de códigos foi criado pelos alunos do 1° Ano do Curso 	 	  #
+#               Técnico de Informática Integrado ao Ensino Médio do Instituto Federal             #
+#         Catarinense Campus Rio do Sul, como parte de um projeto de Iniciação Cientifica,        #
+#                      tendo como objetivo aumentar a performance do dispositivo.    		  #
+#												  #
+#          				        Alunos			                          #
+#    					   André Gonçalves				          #
+#   					 Juan Pablo Nardelli					  #
+# 				       Mateus Lucas Cruz Brandt				          #
+#												  #
+#                                        Professor Orientador			                  #
+#                                           Cristhian Heck			                  #
+#												  #
+#			    https://github.com/AtomRomFork/AtomBoost/releases        	          #
+#											  	  #
+###################################################################################################
+
+

@@ -1,0 +1,215 @@
+#!/system/bin/sh
+# AtomBoost
+
+PATH=$PATH:/system/xbin:/sbin:/vendor/bin:/system/sbin:/system/bin
+if [ -d /data/local/busybox*/xbin ]; then PATH=$PATH:`ls -d /data/local/busybox*/xbin 2>/dev/null`; fi
+line=================================================
+cd "${0%/*}" 2>/dev/null
+mount -o remount,rw /data 2>/dev/null
+busybox mount -o remount,rw /data 2>/dev/null
+# Next line only applies to the init.d boot script. "bootfixemissions=1" means run on boot. Anything else disables it.
+bootfixemissions=1
+bootupdelay="sleep 300"
+if [ -t 0 ]; then interactive=yes; fi
+title(){
+	echo $line
+	echo "   -= -==-"
+	echo $line
+	echo ""
+	sleep 2
+	echo " "
+	echo ""
+	sleep 2
+	echo "    Date: `date | awk '{print $1,$2,$3,$4}'`"
+	echo ""
+	sleep 2
+}
+remount(){
+	mount -o remount,$1 /system 2>/dev/null
+	busybox mount -o remount,$1 /system 2>/dev/null
+	busybox mount -o remount,$1 $(busybox mount | awk '/ \/system /{print $1,$3}') 2>/dev/null
+}
+install(){
+	remount rw
+	for i in /system/etc/init.d/*; do
+		if [ -f "$i" ] && [ "`echo "$i" | awk '!/Alignment|Emission|fixfc|fixalign|disabled/'`" ] && [ "`awk '/771/&&/packages\.xml|pm list packages/' "$i"`" ]; then
+			sed -i '1 a\
+#\
+# Fix Emissions (aka "fixfc") script disabled this script for additional optimization.\
+# To Re-Enable this script, delete the fix permissions stuff in here and rename this file.\
+#' "$i"
+			mv "$i" "$i.disabled_due_to_slow_fix_permissions-Read_Comment_Inside_For_Fix"
+		fi
+	done
+	if [ ! -f "$1" ] && [ ! "`grep $ver "$1"`" ]; then
+		echo ""
+		echo " Installing myself to ${1#*etc}"
+		sleep 2
+		dd if=$0 of=$1
+		chown 0.0 $1; chmod 777 $1
+	elif [ "`echo $1 | grep xbin`" ]; then
+		echo ""
+		echo " $1 is already up to date..."
+		sleep 2
+	fi 2>/dev/null
+	if [ "`echo $1 | grep xbin`" ]; then
+		echo ""
+		echo " To run, type in Terminal: \"su -c ${1##*/}\""
+		sleep 2
+	fi
+	remount ro
+}
+Get_PWN (){ PWN=`busybox stat "$1" | awk -F [\(\/] '/Uid/{gsub(/ /,"");print $4,$6,substr($2,2,3)}'`; }
+apply_permissions(){
+	if [ "`echo $PWN | awk '{print $1":"$2}'`" != "$1:$2" ]; then
+		echo "    chown $1:$2 $4 ( was `echo $PWN | awk '{print $1":"$2}'` )" | tee -a $LOG_FILE
+		chown $1:$2 "$4" 2>&1 | tee -a $LOG_FILE
+	fi
+	if [ "`echo $PWN | awk '{print $3}'`" != "$3" ]; then
+		echo "    chmod $3 $4 ( was `echo $PWN | awk '{print $3}'` )" | tee -a $LOG_FILE
+		chmod $3 "$4" 2>&1 | tee -a $LOG_FILE
+	fi
+}
+Fix_Emissions(){
+	while [ ! "`ps | grep -m 1 [a]ndroid`" ]; do sleep 10; done
+	if [ "`echo $0 | grep -v xbin`" ]; then install /system/xbin/fixfc; fi
+	if [ "`echo $0 | grep "init\.d"`" ] && [ ! "$interactive" ]; then echo ""
+		if [ "$bootfixemissions" -ne 1 ]; then
+			title
+			echo " Current Status: Fix Emissions DOES NOT Run On Boot!"
+			echo ""
+			echo " But Hey! Init.d Start Up Scripts Are Working!"
+			echo ""
+			exit 0
+		else echo $bootupdelay | awk '{print " Waiting for "$NF" seconds..."}'; $bootupdelay
+		fi
+	elif [ -d "/system/etc/init.d" ]; then install /system/etc/init.d/94fixfc
+	fi
+	LOG_FILE=/data/Ran_FixEmissions.log
+	echo "" | tee $LOG_FILE
+	title | tee -a $LOG_FILE
+	id=$(id); id=${id#*=}; id=${id%%[\( ]*}
+	if [ "$id" != "0" ] && [ "$id" != "root" ]; then
+		sleep 1
+		echo " You are NOT running this script as root..." | tee -a $LOG_FILE
+		echo "" | tee -a $LOG_FILE
+		sleep 3
+		echo $line | tee -a $LOG_FILE
+		echo "                      ...No SuperUser For You!!" | tee -a $LOG_FILE
+		echo $line | tee -a $LOG_FILE
+		echo "" | tee -a $LOG_FILE
+		sleep 3
+		echo "         ...Please Run as Root and try again..." | tee -a $LOG_FILE
+		echo "" | tee -a $LOG_FILE
+		echo $line | tee -a $LOG_FILE
+		echo "" | tee -a $LOG_FILE
+		sleep 3
+		exit 69
+	fi
+	remount rw
+	START=`date +%s`
+	BEGAN=`date | awk '{print $1,$2,$3,$4}'`
+	TOTAL=`grep -c "package name" /d*/system/packages.xml`
+	INCREMENT=3
+	PROGRESS=0
+	PROGRESS_BAR=""
+	echo " Start Fix Emissions: $BEGAN" >> $LOG_FILE
+	echo "" >> $LOG_FILE
+	echo " Checking Permissions For..." >> $LOG_FILE
+	echo "" >> $LOG_FILE
+	busybox sync
+	grep "package name" /d*/system/packages.xml | while read pkgline; do
+		ApkFile=`echo $pkgline | awk -F \" '{print $4}'`
+		if [ ! -f "$ApkFile" ]; then continue; fi
+		PROGRESS=$((PROGRESS+1))
+		PERCENT=$((PROGRESS*100/TOTAL ))
+		if [ "$interactive" ]; then
+			if [ "$PERCENT" -eq "$INCREMENT" ]; then
+				INCREMENT=$((INCREMENT+3))
+				PROGRESS_BAR="$PROGRESS_BAR="
+			fi
+			clear
+			echo ""
+			echo -n "                                        >"
+			echo -e "\r       $PROGRESS_BAR>"
+			echo "       \"Fix Emissions\" by -=zeppelinrox=-"
+			echo -n "                                        >"
+			echo -e "\r       $PROGRESS_BAR>"
+		fi
+		echo ""
+		echo "       Processing Apps - $PERCENT% ($PROGRESS of $TOTAL)"
+		echo ""
+		PkgName=`echo $pkgline | awk -F \" '{print $2}'`
+		ApkDir="`busybox dirname "$ApkFile"`"
+		DataDir=/d*/d*/$PkgName
+		PkgID=`echo $pkgline | sed 's/.*serId="\|".*//g'`
+		echo " Checking Permissions For..."
+		echo ""
+		echo " ...$PkgName"
+		echo " $PkgName ($ApkFile)" >> $LOG_FILE
+		Get_PWN "$ApkFile"
+		if [ "$ApkDir" = "/system/framework" ]; then ApkFilePERM="0 0 666"
+		elif [ "$ApkDir" = "/system/app" ] || [ "$ApkDir" = "/vendor/app" ]; then ApkFilePERM="0 0 644"
+		elif [ "$ApkDir" = /d*/app ]; then ApkFilePERM="1000 1000 644"
+		elif [ "$ApkDir" = /d*/app-private ]; then ApkFilePERM="1000 $PkgID 640"
+		elif [ "`echo $ApkDir | grep asec`" ] && [ "`mount | awk '/'$PkgName'/&&!/vfat/'`" ]; then mount -o remount,rw "$ApkDir"; ApkFilePERM="1000 $PkgID 640"
+		fi
+		if [ "$ApkFilePERM" ] && [ "$PWN" != "$ApkFilePERM" ]; then apply_permissions $ApkFilePERM "$ApkFile"; ApkFilePERM=;fi
+		if [ -d $DataDir ]; then Get_PWN $DataDir; DataDirPERM="$PkgID $PkgID 755"
+			if [ "$PWN" != "$DataDirPERM" ]; then apply_permissions $DataDirPERM $DataDir; fi
+			busybox find $DataDir -mindepth 1 -type d | while read SubDir; do Get_PWN "$SubDir"
+				SubDirName=`busybox basename "$SubDir"`
+				if [ "$SubDirName" = "lib" ]; then SubDirPERM="1000 1000 755"; DataFilePERM=$SubDirPERM
+				else SubDirPERM="$PkgID $PkgID 771"
+					if [ "$SubDirName" = "shared_prefs" ] && [ "`echo $DataDir | grep "robv.*appsettings\|android\.calendar"`" ]; then DataFilePERM="$PkgID $PkgID 664"
+					elif [ "$SubDirName" = "shared_prefs" ] || [ "$SubDirName" = "databases" ]; then DataFilePERM="$PkgID $PkgID 660"
+					elif [ "$SubDirName" = "cache" ]; then DataFilePERM="$PkgID $PkgID 600"
+					elif [ "$SubDirName" = "files" ]; then DataFilePERM="$PkgID $PkgID 775"
+					else DataFilePERM=$SubDirPERM
+					fi
+				fi
+				if [ "$PWN" != "$SubDirPERM" ]; then apply_permissions $SubDirPERM "$SubDir"; fi
+				busybox find "$SubDir" -type f -maxdepth 1 | while read DataFile; do Get_PWN "$DataFile"
+					if [ "$PWN" != "$DataFilePERM" ]; then apply_permissions $DataFilePERM "$DataFile"; fi
+				done
+			done
+		fi
+	done
+	busybox sync
+	remount ro
+	STOP=`date +%s`
+	ENDED=`date | awk '{print $1,$2,$3,$4}'`
+	RUNTIME=$((STOP-START))
+	HOURS=$((RUNTIME/3600)); MINS=$((RUNTIME/60%60)); SECS=$((RUNTIME%60))
+	RUNTIME=`printf "%d:%02d:%02d\n" $HOURS $MINS $SECS`
+	echo "" | tee -a $LOG_FILE
+	echo $line | tee -a $LOG_FILE
+	echo "" | tee -a $LOG_FILE
+	sleep 1
+	echo " FIXED Permissions For ALL $TOTAL Apps..." | tee -a $LOG_FILE
+	echo ""| tee -a $LOG_FILE
+	sleep 1
+	echo "          ...Say Buh Bye To Force Close Errors!"
+	echo ""
+	echo $line
+	echo ""
+	sleep 1
+	echo "      Start Time: $BEGAN" | tee -a $LOG_FILE
+	echo "       Stop Time: $ENDED" | tee -a $LOG_FILE
+	echo "" | tee -a $LOG_FILE
+	echo " Completion Time: $RUNTIME" | tee -a $LOG_FILE
+	echo "" | tee -a $LOG_FILE
+	sleep 1
+	echo " See $LOG_FILE for more details!"
+	echo ""
+	sleep 1
+	echo "         ==============================" | tee -a $LOG_FILE
+	echo "          ) Fix Emissions Completed! (" | tee -a $LOG_FILE
+	echo "         ==============================" | tee -a $LOG_FILE
+	echo "" | tee -a $LOG_FILE
+	sleep 1
+}
+if [ "`ps | grep -m 1 [a]ndroid`" ]; then Fix_Emissions
+echo "Iniciado, by Wellison S." > /data/sboost/sbscripts.log;
+
+exit 0;

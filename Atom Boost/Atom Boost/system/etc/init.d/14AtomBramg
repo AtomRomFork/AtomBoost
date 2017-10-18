@@ -1,0 +1,87 @@
+#!/system/bin/sh
+# AtomBoost
+
+PATH=$PATH:/system/xbin:/sbin:/vendor/bin:/system/sbin:/system/bin
+if [ -d /data/local/busybox*/xbin ]; then PATH=$PATH:`ls -d /data/local/busybox*/xbin 2>/dev/null`; fi
+mount -o remount,rw /data 2>/dev/null;
+busybox mount -o remount,rw /data 2>/dev/null;
+
+minfreefile="/sys/module/lowmemorykiller/parameters/minfree";
+ram=$((`awk '/MemTotal/{print $2}' /proc/meminfo`/1024));
+
+Start(){
+	echo "";
+	echo "";
+	echo "";
+	echo "Executed at: `date | awk '{print $1,$2,$3,$4}'`";
+};
+RAM(){
+	echo "";
+	echo "";
+	echo "";
+ 	echo "...based on the $ram MB of RAM on your device!";
+ 	echo "";
+
+	if [ "$ram" -lt 256 ]; then
+		calculatedmb="8, 12, $((ram*11/100)), $((ram*12/100)), $((ram*13/100)), $((ram*14/100))"
+	elif [ "$ram" -lt 512 ]; then
+		calculatedmb="8, 12, $((ram*11/100)), $((ram*13/100)), $((ram*15/100)), $((ram*17/100))"
+	elif [ "$ram" -lt 640 ]; then
+		calculatedmb="8, 14, $((ram*13/100)), $((ram*15/100)), $((ram*17/100)), $((ram*19/100))"
+	elif [ "$ram" -lt 768 ]; then
+		calculatedmb="8, 14, $((ram*15/100)), $((ram*17/100)), $((ram*19/100)), $((ram*21/100))"
+	elif [ "$ram" -lt 896 ]; then
+		calculatedmb="8, 14, $((ram*17/100)), $((ram*19/100)), $((ram*21/100)), $((ram*23/100))"
+	else
+		calculatedmb="8, 16, $((ram*20/100)), $((ram*22/100)), $((ram*24/100)), $((ram*26/100))"
+	fi
+	
+	calculatedminfree=`echo $calculatedmb | awk -F, '{print $1*256","$2*256","$3*256","$4*256","$5*256","$6*256}'`
+	MB1=`echo $calculatedminfree | awk -F, '{print $1}'`;MB2=`echo $calculatedminfree | awk -F, '{print $2}'`;MB3=`echo $calculatedminfree | awk -F, '{print $3}'`;MB4=`echo $calculatedminfree | awk -F, '{print $4}'`;MB5=`echo $calculatedminfree | awk -F, '{print $5}'`;MB6=`echo $calculatedminfree | awk -F, '{print $6}'`
+	echo ""/sys/module/lowmemorykiller/parameters "= $MB1,$MB2,$MB3,$MB4,$MB5,$MB6";
+	scminfree="$((MB1)),$((MB2)),$((MB3)),$((MB4)),$((MB5)),$((MB6))"
+	echo "$scminfree" > $minfreefile
+	
+	if [ -e /sys/module/lowmemorykiller/parameters/adj ] ; then
+		echo "0,3,6,10,12,15" > /sys/module/lowmemorykiller/parameters/adj;
+		echo ""/lowmemorykiller/parameters/adj "= 0,3,6,10,12,15";
+	fi
+	
+	if [ -e /sys/module/lowmemorykiller/parameters/cost ]; then
+		echo "64" > /sys/module/lowmemorykiller/parameters/cost;
+		echo ""/sys/module/lowmemorykiller/parameters/cost "= 64";
+	fi
+
+	if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
+		echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+		echo ""/sys/module/lowmemorykiller/parameters/debug_level "= 0";
+	fi
+	
+	if [ -e /sys/module/lowmemorykiller/parameters/debug_adj ]; then
+		echo "0" > /sys/module/lowmemorykiller/parameters/debug_adj;
+		echo ""/sys/module/lowmemorykiller/parameters/debug_adj "= 0";
+	fi
+	
+	if [ -e sys/module/lowmemorykiller/parameters/lmk_fast_run ]; then
+		echo "1" > sys/module/lowmemorykiller/parameters/lmk_fast_run;
+		echo ""/sys/module/lowmemorykiller/parameters/lmk_fast_run "= 1";
+	fi
+};
+RUN(){
+	while [ ! "`ps | grep -m 1 [a]ndroid`" ]; do sleep 10; done;
+	if [ "`echo $0 | grep "init\.d"`" ]; then
+		sleep 60;
+	fi;
+	RAM;
+	echo "";
+	echo "$0 RK OK RAM BOOST ";
+	echo "";
+};
+if [ ! "`ps | grep -m 1 [a]ndroid`" ]; then exec > /data/sboost/sbram.log 2>&1; fi;
+Start;
+if [ "`ps | grep -m 1 [a]ndroid`" ]; then RUN;
+else RUN &
+fi;
+echo "RAM Manager (SB) by Wellison S." > /data/sboost/sbram.log;
+
+exit 0;

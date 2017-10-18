@@ -1,0 +1,32 @@
+########################################################################################################
+#       	          _______ ____  __  __ ____   ____   ____   _____ _______ 	               #
+#   		       /\|__   __/ __ \|  \/  |  _ \ / __ \ / __ \ / ____|__   __|                     #
+#        	      /  \  | | | |  | | \  / | |_) | |  | | |  | | (___    | |  		       #
+#  	             / /\ \ | | | |  | | |\/| |  _ <| |  | | |  | |\___ \   | |                        #
+# 		    / ____ \| | | |__| | |  | | |_) | |__| | |__| |____) |  | |                        #
+#		   /_/    \_\_|  \____/|_|  |_|____/ \____/ \____/|_____/   |_|                        #
+#												       #
+#                                                                                                      #
+# Requisitos:                                                                                          #
+#                                                                                                      #
+# 1° - Possuir acessor Root no seu dispositivo                                                         #
+# 2° - Possuir suporte a Init.d                                                                        #
+# 3° - Possuir BusyBox                                                                                 #
+# 4° - Possuir o Custom Recovery TWRP                                                                  #
+# 5° - Root Expolorer (Caso queira confirmar a instalação)                                             #
+#                                                                                                      #
+# O que é root (Site em inglês): https://www.xda-developers.com/root/                                  #
+# Init.d: http://forum.xda-developers.com/showthread.php?t=1933849                                     #
+# BusyBox: https://play.google.com/store/apps/details?id=stericson.busybox&hl=pt_BR                    #
+# Root Explorer: https://play.google.com/store/apps/details?id=com.speedsoftware.rootexplorer&hl=pt_BR #
+# TWRP: https://twrp.me/Devices/                                                                       #
+#                                                                                                      #
+# Como instalar:                                                                                       #
+#                                                                                                      #
+# 1° - Entre no modo recovery do seu dispositivo						       #
+# 2° - Vá no menu de instalação do TWRP								       #
+# 3° - Clique em instalar e selecione o arquivo Atom Boost.zip e confirme a instalação dele            #
+# 4° - Faça uma limpeza do cache e do dalvik cache para que não ocorra erros                           #
+# 5° - Ao ligar abra o Root Explorer e confirme se os arquivos foram instalados                        #
+#                                                                                                      #
+########################################################################################################

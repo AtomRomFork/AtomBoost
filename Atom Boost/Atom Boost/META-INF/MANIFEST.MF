@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Created-By: 1.0 (Android SignApk)
+
+Name: system/etc/init.d/01malive
+SHA1-Digest: 9jD+yPklt6OKZDihQXZnC7KG66I=
+
+Name: META-INF/com/google/android/updater-script
+SHA1-Digest: 0htlr+AGL/rg724UxYaYQJxgTdY=
+
+Name: system/etc/sysctl.conf
+SHA1-Digest: SZADNFXDojNPZfyoush/P4Q/fpw=
+
+Name: system/xbin/sqlite3
+SHA1-Digest: pKLsBrkDEwxg173auj9ZgFVSDdE=
+
+Name: system/etc/hosts
+SHA1-Digest: XwWlaPUopfSdrZLBmdyWF2XA5JU=
+
+Name: system/malive.prop
+SHA1-Digest: +b2Y+puUUsw4TPe3WQX8xU3h4Cs=
+
+Name: META-INF/com/google/android/update-binary
+SHA1-Digest: 7LjhI2kUKoWfvQFHyInm+pcJigY=
+
+Name: system/xbin/zipalign
+SHA1-Digest: pwL0NEqL/oCSjT+NiX3jh8ptQSU=
+

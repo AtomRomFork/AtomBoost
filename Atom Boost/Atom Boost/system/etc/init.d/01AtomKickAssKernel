@@ -1,0 +1,61 @@
+#!/system/bin/sh
+echo "";
+if [ ! "`id | grep =0`" ]; then
+ echo " You are NOT running this script as root...";
+ echo "";
+ echo " ...No SuperUser for you!!";
+ echo "";
+ echo " ...Please Run as Root and try again...";
+ echo "";
+ exit 69;
+fi;
+busybox mount -o remount,rw /system 2>/dev/null;
+for m in /dev/block/mtdblock*;
+do
+busybox mount -o remount,rw $m /system 2>/dev/null;
+done;
+busybox sysctl -p;
+busybox mount -t debugfs none /sys/kernel/debug 2>/dev/null;
+echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features 2>/dev/null;
+busybox umount /sys/kernel/debug;
+busybox sysctl -e -w vm.oom_kill_allocating_task=0;
+busybox sysctl -e -w vm.panic_on_oom=0;
+busybox sysctl -e -w vm.dirty_background_ratio=50;
+busybox sysctl -e -w vm.dirty_ratio=70;
+busybox sysctl -e -w vm.min_free_kbytes=4096;
+busybox sysctl -e -w vm.vfs_cache_pressure=50;
+busybox sysctl -e -w vm.overcommit_memory=1;
+busybox sysctl -e -w vm.min_free_order_shift=4;
+busybox sysctl -e -w vm.laptop_mode=0;
+busybox sysctl -e -w vm.block_dump=0;
+busybox sysctl -e -w vm.dirty_writeback_centisecs=2000;
+busybox sysctl -e -w vm.dirty_expire_centisecs=1000;
+busybox sysctl -e -w kernel.panic=0;
+busybox sysctl -e -w kernel.panic_on_oops=1;
+busybox sysctl -e -w kernel.msgmni=2048;
+busybox sysctl -e -w kernel.msgmax=64000;
+busybox sysctl -e -w kernel.shmmni=4096;
+busybox sysctl -e -w kernel.shmall=2097152;
+busybox sysctl -e -w kernel.shmmax=268435456;
+busybox sysctl -e -w kernel.sem='500 512000 64 2048';
+busybox sysctl -e -w kernel.sched_features=24189;
+busybox sysctl -e -w kernel.hung_task_timeout_secs=30;
+busybox sysctl -e -w kernel.sched_latency_ns=18000000;
+busybox sysctl -e -w kernel.sched_min_granularity_ns=1500000;
+busybox sysctl -e -w kernel.sched_wakeup_granularity_ns=3000000;
+busybox sysctl -e -w kernel.sched_compat_yield=1;
+busybox sysctl -e -w kernel.sched_shares_ratelimit=256000;
+busybox sysctl -e -w kernel.sched_child_runs_first=0;
+busybox sysctl -e -w kernel.threads-max=5000;
+busybox sysctl -e -w fs.lease-break-time=10;
+busybox sysctl -e -w fs.file-max=65536;
+for k in $(busybox mount | cut -d " " -f3);
+do
+busybox sync;
+busybox mount -o remount,noatime $k 2>/dev/null;
+done;
+busybox mount -o remount,ro /system 2>/dev/null;
+for m in /dev/block/mtdblock*;
+do
+busybox mount -o remount,ro $m /system 2>/dev/null;
+done;

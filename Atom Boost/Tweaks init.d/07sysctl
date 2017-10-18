@@ -1,0 +1,4 @@
+#!/system/bin/sh
+
+### Sysctl Loader
+sysctl -p /system/etc/sysctl.conf

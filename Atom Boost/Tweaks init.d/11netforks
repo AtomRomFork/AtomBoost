@@ -1,0 +1,118 @@
+#!/system/bin/sh
+
+#changelogs:
+# 1.1: Initial Release
+# 1.2: Added VPN Speed Boost Tweaks, Buffer Speed Tweaks and CWM Flashable
+# 2.0: Added Jelly Bean 4.1.1 & 4.1.2 Support
+
+#
+
+echo   
+        $TILL
+             get ABS(#end);
+
+setprop ro.value
+             set TYPE
+service init.goldfish.rc
+             $export
+
+echo
+    setprop ro.checktype
+            service phone.about
+                          $check
+            service custom.type 1
+echo   
+        $GET
+                     /init.goldfish.rc
+                     
+
+
+on boot
+# Local-host is a host of IP 10.0.2.3
+    setprop NET locate
+    setprop net.eth0.dns1 10.0.2.3
+    setprop net.gprs.local-host 203.115.112.5
+    setprop net.hspa.local-host 203.115.112.5
+    setprop net.hsdpa.local-host 203.115.112.5
+    setprop net.hsupa.local-host 203.115.112.5
+    setprop net.WLAN.local-host 203.115.112.5
+                #ip
+                $external
+                service settings.wifi
+                                $check
+                service custom.value 1
+       
+    setprop net.VPN.local-host 203.115.112.5
+                #ip
+                $external
+                service settings.VPN
+                                $check
+                setvice custom.value 1
+
+    setprop ro.build.prop allow
+    setprop ro.build.product generic
+    setprop ro.product.device generic
+
+
+echo   
+        $START
+
+apn
+    service settings.apn auto detect 1
+
+
+web compression
+    service browser.allow.compression 1
+    service browser.compression.decompress 1
+
+
+heap locate
+    max 5670000kb
+    min 56kb
+    min 1b service.if.localhost
+    max 20kb service.if.localhost
+
+
+# disable some daemons if doesn't needed
+    STOP wake
+    STOP read cache
+
+    setprop ro.bypass type TORRENT
+# API check $URL/Download  [                 ]
+# API check $URL/get check [                 ]
+# API check $URL/dl check  [                 ]
+# API check $URL/next (#end) [.              ]
+# API check #!history ($function.app.net) [""]
+
+echo  
+    setprop ro.check type 1;
+    # bayfiles.com # ip;
+    # utorrent.com # ip;
+    # piratebay.com #ip;
+
+
+# disable access of bots if necessary as server
+# increases speed
+    setprop ro.bots allow server  0
+
+# For boosting network signal strength
+#   setprop ro.goldfish.strength 1
+#   setprop ro.flush.auto 1
+#
+
+service goldfish-setup /system/etc/init.goldfish.sh
+    oneshot
+
+service telnet locate
+    allow
+
+
+
+
+    end netforks_tweaks
+    end           if [next] 99complete
+       then  
+            echo "0" end
+
+
+#end
